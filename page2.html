@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport"
+  content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
+ <title>ดูหนังหนังออนไลน์สร้างรายได้</title>
+ <style>
+  body {padding: 25px;background-color: #46abb0;color: yellow;}
+  .button {width: 60%;padding: 8px 0;margin: 2px auto;font-size: 16px;border-radius: 10px;
+  background-color: #ffd86c;}
+  button {width: 100%;padding: 8px 0;margin: 2px auto;font-size: 20px;border-radius: 12px;
+  background-color: #feb5da;}
+ </style>
+</head>
+
+<body>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+ <script src="https://static.line-scdn.net/liff/edge/versions/2.6.0/sdk.js"></script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<img src = "https://www.apivat.com/liff2/logo_red.png" width="20%"><br>
+  <label >ลิ้งค์คลิปวิดีโอ:</label><br>
+  <input type="text" id="linkUrl"><br>
+  <label >ลิ้งค์ภาพส่วนหัว:</label><br>
+  <input type="text" id="linkHero"><br>
+  <label >ชื่อคลิปวิดีโอ:</label><br>
+  <input type="text" id="videoName"><br>
+  <button type="text" id="btnSave" class = "button" onclick="save()">บันทึกลิ้งค์</button><br>
+
+ <button id="btnshareClip" class="btn_share" onclick="shareClip()">แชร์คลิปใน Line OA</button>
+ <button id="btnforwardFlex" class="btn_share" onclick="forwardFlex()">ส่งให้เพื่อน</button>
+ <!--<button id="btnShareMsg" class="btn_share" onclick="shareMsg()">ส่งข้อความ</button>-->
+ <br>
+  <label >url ของภาพ:</label><br>
+  <input type="text" id="linkImg" name="linkImg"><br>
+  <label >ให้ลิงค์ไปที่:</label><br>
+  <input type="text" id="linkTo" name="linkTo"><br>
+  <button id="btnAdd" class = "button" onclick="add()">บันทึกรูป&ลิ้งค์</button>
+  
+ <button id="btnshareimage" class="btn_share" onclick="shareimage()">ส่งภาพ</button>
+
+ <script>
+ var clipUrl = ""
+ var clipName = ""
+ var picHeader = ""
+ var shareFreind = "https://liff.line.me/2001348078-QWMZDVPY?refer=clip"
+ 
+ var linkImage =""
+ var linkToUrl =""
+ 
+ function save(){
+    clipUrl = document.getElementById("linkUrl").value
+    picHeader = document.getElementById("linkHero").value
+	clipName = document.getElementById("videoName").value
+              document.getElementById("linkUrl").value = ""
+              document.getElementById("linkHero").value = ""
+			  document.getElementById("videoName").value = ""
+ }
+ function add(){
+    linkImage = document.getElementById("linkImg").value
+    linkToUrl = document.getElementById("linkTo").value
+              document.getElementById("linkImg").value = ""
+              document.getElementById("linkTo").value = ""
+ }
+ 
+ async function main() {
+      await liff.init({ liffId: "2001348078-QWMZDVPY" })
+      liff.ready.then(()=>{
+      if (liff.isLoggedIn()) {
+      let refer = getParameterByName('refer')
+      if(refer) forwardFlex()
+      } else {
+        liff.login()
+      }
+      })
+   }
+    main()
+  
+  function getParameterByName(name) {
+    let url = window.location.href;
+        url = new URL(url)
+    let param = url.searchParams.get(name)
+        return param
+    }
+ 
+
+     //////////กดปุ่มแชร์ตส่งต่อให้เพื่อนดู/////////////   
+
+    function forwardFlex(){
+
+  liff.shareTargetPicker([
+    {
+    "type": "flex",
+    "altText": "Flex Message",
+    "contents": 
+ ////เริ่มตรงนี้
+ {
+  "type": "bubble",
+  "direction": "ltr",
+  "hero": {
+    "type": "image",
+    "url": picHeader,
+    "size": "full",
+    "aspectRatio": "1.51:1",
+    "aspectMode": "fit"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": clipName,
+        "weight": "bold",
+        "align": "center",
+        "wrap": true,
+        "contents": []
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "horizontal",
+    "contents": [
+      {
+        "type": "button",
+        "action": {
+          "type": "uri",
+          "label": "คลิกดูเลยจ้า!!",
+          "uri": clipUrl
+        },
+        "style": "primary"
+      },
+      {
+        "type": "button",
+        "action": {
+          "type": "uri",
+          "label": "แชร์ให้เพื่อนดู!!",
+          "uri": shareFreind
+        },
+        "style": "secondary"
+      }
+    ]
+  }
+}
+ //// ถึงตรงนี้
+  }
+      ]).then(() => {
+         swal.fire({
+            title: 'สำเร็จ',
+            text: 'ดำเนินการส่งเรียบร้อย',
+            type: 'success',
+            onClose: () => {
+              liff.closeWindow();
+            }
+          });
+    })
+    }
+ 
+ //////////ส่ง Flex ในไลน์ OA///////////// 
+ function shareClip(){
+      liff.sendMessages([
+    {
+    "type": "flex",
+    "altText": "Flex Message",
+    "contents": 
+ ////เริ่มตรงนี้
+ {
+  "type": "bubble",
+  "direction": "ltr",
+  "hero": {
+    "type": "image",
+    "url": picHeader,
+    "size": "full",
+    "aspectRatio": "1.51:1",
+    "aspectMode": "fit"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": clipName,
+        "weight": "bold",
+        "align": "center",
+        "wrap": true,
+        "contents": []
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "horizontal",
+    "contents": [
+      {
+        "type": "button",
+        "action": {
+          "type": "uri",
+          "label": "คลิกดูเลยจ้า!!",
+          "uri": clipUrl
+        },
+        "style": "primary"
+      },
+      {
+        "type": "button",
+        "action": {
+          "type": "uri",
+          "label": "แชร์ให้เพื่อนดู!!",
+          "uri": shareFreind
+        },
+        "style": "secondary"
+      }
+    ]
+  }
+}
+ //// ถึงตรงนี้
+  }
+      ]).then(() => {
+         swal.fire({
+            title: 'สำเร็จ',
+            text: 'ดำเนินการส่งเรียบร้อย',
+            type: 'success',
+            onClose: () => {
+              liff.closeWindow();
+            }
+          });
+    })
+    }
+ 
+     /////ส่งภาพ//////// 
+ function shareimage() {
+ liff.sendMessages([
+    {
+ "type": "flex",
+    "altText": "Flex Message",
+    "contents": {
+    "type": "bubble",
+    "size": "giga",
+    "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "image",
+        "url": linkImage,
+        "size": "full",
+        "action": {
+          "type": "uri",
+          "label": "action",
+          "uri": linkToUrl
+        },
+        "aspectMode": "cover"
+      }
+    ],
+    "spacing": "none",
+    "margin": "none",
+    "paddingAll": "0px"
+        }
+       }
+     }
+    ]).then(() => {
+         swal.fire({
+            title: 'สำเร็จ',
+            text: 'ดำเนินการส่งเรียบร้อย',
+            type: 'success',
+            onClose: () => {
+              liff.closeWindow();
+            }
+          });
+    })
+ 
+ }
+ 
+ //////////ส่งข้อความ/////////////
+   async function shareMsg(){
+     await liff.shareTargetPicker([
+    {
+      type: "text",
+      text: "สวัสดีครับ"
+    }
+     ]).then(() => {
+         swal.fire({
+            title: 'สำเร็จ',
+            text: 'ดำเนินการส่งเรียบร้อย',
+            type: 'success',
+            onClose: () => {
+              liff.closeWindow();
+            }
+          });
+    })
+  }
+
+ </script>
+
+</body>
+
+</html>
